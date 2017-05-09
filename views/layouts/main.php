@@ -8,9 +8,9 @@ use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
 use app\assets\AppAsset;
-use app\assets\ResponsiveAsset;
+//use app\assets\ResponsiveAsset;
 
-ResponsiveAsset::register($this);
+//ResponsiveAsset::register($this);
 AppAsset::register($this);
 ?>
 <?php $this->beginPage() ?>

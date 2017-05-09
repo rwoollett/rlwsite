@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "c92f85b6f25ff9c03f3ac19f88350d3f",
+    "content-hash": "03be2ba56e0aeafb949d62272e7952bf",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -173,43 +173,6 @@
                     "package.json"
                 ]
             }
-        },
-        {
-            "name": "bower-asset/responsive-toolkit",
-            "version": "2.6.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/maciej-gurban/responsive-bootstrap-toolkit.git",
-                "reference": "7b35f487a33f7f91f234c4ecfc72ca8b2ae3f411"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/maciej-gurban/responsive-bootstrap-toolkit/zipball/7b35f487a33f7f91f234c4ecfc72ca8b2ae3f411",
-                "reference": "7b35f487a33f7f91f234c4ecfc72ca8b2ae3f411",
-                "shasum": ""
-            },
-            "require": {
-                "bower-asset/jquery": ">=1.9.1"
-            },
-            "type": "bower-asset-library",
-            "extra": {
-                "bower-asset-main": "dist/bootstrap-toolkit.js",
-                "bower-asset-ignore": [
-                    "node_modules",
-                    "null"
-                ]
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "Responsive Bootstrap Toolkit provides an easy way of breakpoint detection in JavaScript, detecting changes in currently active breakpoint, as well as executing any breakpoint-specific JavaScript code. Despite the name, you can use it also with Foundation, or any other framework.",
-            "keywords": [
-                "bootstrap",
-                "breakpoint detection",
-                "detect screen resolution",
-                "foundation",
-                "responsive"
-            ]
         },
         {
             "name": "bower-asset/yii2-pjax",
