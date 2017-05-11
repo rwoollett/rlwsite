@@ -1,11 +1,11 @@
 <?php
 
-use Yii;
+//use Yii;
 ?>
 <h1>stock/feedback</h1>
 
-<p>
-    <?= $message; ?>.
+<p id="filter_id_test">
+    <?=$message; ?>.
     <?php
 
     ?>

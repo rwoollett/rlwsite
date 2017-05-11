@@ -10,6 +10,9 @@ use yii\widgets\ListView;
 $this->title = 'Stock Search';
 $this->params['breadcrumbs'][] = ['label' => 'Stock Index', 'url' => ['stock/index']];
 $this->params['breadcrumbs'][] = $this->title;
+
+// = Html::encode("<script>alert('alert!');</script><h1>ENCODE EXAMPLE</h1>>") 
+// = HtmlPurifier::process("<script>alert('alert!');</script><h1> HtmlPurifier EXAMPLE</h1>") 
 ?>
 
 <div class="stock-search">
@@ -33,13 +36,13 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
         <div class="row">
             <div class="col-sm-4 col-lg-4">
-                <p class="info">Location: <u><b><?=$model->locationName; ?></b></u>
+                <p class="info">Location: <u><b><?= $model->locationName; ?></b></u>
             </div>
             <div class="col-sm-4 col-lg-4">
-                <p class="info">Category: <u><b><?=$model->categoryName; ?></b></u>
+                <p class="info">Category: <u><b><?= $model->categoryName; ?></b></u>
             </div>
             <div class="col-sm-4 col-lg-4">
-                <p class="info"><u><b><?=$model->supplierName; ?></b></u>
+                <p class="info"><u><b><?= $model->supplierName; ?></b></u>
             </div>
         </div>
         <div class="row">
@@ -47,12 +50,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 <p>Select a product type with one of the following links below.</p>
                 <p>
                     <?php
-                    $totalCount = 0;
-//            foreach ($productlinks as $link) {
-//                <a href="//<?php echo $url->get("stock/search") . "/?" . $link["Link"] . "&Page=1&PageSize=$pagesize"; >"><?php
-//                    echo $link["LinkText"];
-//                    ></a>&nbsp;|&nbsp;
+                    foreach ($model->productlinks as $link) {
+                        ?>
+                        <a href="<?= $link["Link"] ?>"><?= $link["LinkText"]; ?></a>&nbsp;|&nbsp;
+                        <?php
+                    }
                     ?>
+
                 </p>
             </div>
         </div>
@@ -103,26 +107,29 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 
 <div id="List" class="container-fluid form-searchlist">
-    <form class="form-list" name="searchlist" action="<?php echo Url::to(["stock/cart", "stockid" => 1]) . "/cart&Action=View"; ?>" method="post">
-    </form>
     <?=
     ListView::widget([
-        'dataProvider' => $dataProvider,
+        'dataProvider' => $model->dataProvider,
         'layout' => '{pager}{summary}',
     ]);
     ?>
     <div class="row">
         <div class="col-md-12">
-            <hr class="line"></hr>
+            <hr class="line"/>
         </div>
     </div>
+    <!--
+    <form class="form-list" name="searchlist" action="?php echo Url::to(["stock/cart", "stockid" => 1]) . "/cart&Action=View"; ?" method="post">
+    -->
     <?=
     ListView::widget([
-        'dataProvider' => $dataProvider,
+        'dataProvider' => $model->dataProvider,
         'itemView' => '_stock',
+     //   'viewParams' => ['listform' => $listform, 'cartitem' => $cartitem],
         'layout' => '{items}{pager}',
     ]);
     ?>
+    <!--    </form> -->
 </div>
 
 

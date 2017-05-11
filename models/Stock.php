@@ -77,4 +77,46 @@ class Stock extends \yii\db\ActiveRecord {
         return $this->hasOne(Product::className(), ['ProductID' => 'ProductID']);
     }
 
+    public function getOptionAndCost() {
+        //$arrRow ['CostType'], $arrRow ['StockCost'], $arrRow ['Options']
+        $strSelectedCost = '';
+        $strSelectedOption = '';
+        if ($this->Options != '') {
+            $arrOptions = explode("\n", preg_replace("'(\r)?\n'", "\n", $this->Options));
+            if ($this->CostType == 'OneCost') {
+                $strSelectedCost = sprintf("%01.2f", $this->StockCost);
+                $strSelectedOption = $arrOptions[0];
+            }
+            if ($this->CostType == 'SelectCost') {
+                $arrFields = explode(",", trim($arrOptions[0]));
+                $strSelectedOption = $arrFields [0];
+                $strSelectedCost = sprintf("%01.2f", $arrFields [1]);
+            }
+        }
+        return array(
+            'Cost' => $strSelectedCost,
+            'Option' => $strSelectedOption
+        );
+    }
+
+    public function getItemOptions() {
+        $stockCost = '';
+        $options = array();
+        if ($this->Options != '') {
+            if ($this->CostType == 'OneCost') {
+                $stockCost = sprintf("%01.2f", $this->StockCost);
+                $options = explode("\n", preg_replace("'(\r)?\n'", "\n", $this->Options));
+            }
+            if ($this->CostType == 'SelectCost') {
+                $options = explode("\n", preg_replace("'(\r)?\n'", "\n", $this->Options));
+            }
+            // One Cost, or Select Cost - Both have a list of options
+            // SelectCost will have no Cost value, as cost is part of the options
+        }
+        return array(
+            'Cost' => $stockCost,
+            'Options' => $options
+        );
+    }
+
 }

@@ -6,10 +6,11 @@ use Yii;
 use yii\filters\VerbFilter;
 use yii\helpers\Url;
 use yii\web\Cookie;
-use yii\data\ActiveDataProvider;
-use app\models\Stock;
 use app\models\SearchStockForm;
-//use app\components\HttpInputFilter;
+use app\models\CartItem;
+use yii\widgets\ActiveForm;
+use yii\web\Response;
+
 /*
  * The Controllers should −
   Be very thin. Each action should contain only a few lines of code.
@@ -30,8 +31,6 @@ class StockController extends \yii\web\Controller {
                     'more-info' => ['get'],
                 ],
             ],
-            // anonymous, class name only
-         //   HttpInputFilter::className(),
         ];
     }
 
@@ -62,7 +61,6 @@ class StockController extends \yii\web\Controller {
 
     public function actionSearch() {
         $mSearchStock = new SearchStockForm();
-        //SeachStockForm::find();
         if (Yii::$app->request->isPost) {
             // Can post this action when changing a search or page size
             $session = Yii::$app->session;
@@ -71,7 +69,7 @@ class StockController extends \yii\web\Controller {
             }
             if ($mSearchStock->load(Yii::$app->request->post()) && $mSearchStock->validate()) {
                 // valid data received in $mSearchStock now redeirect to complete this post
-                $params = $mSearchStock->getAttributes(["location", "category", "supplier", "search", "pagesize"]);
+                $params = $mSearchStock->getAttributes(["location", "category", "supplier", "search", "product", "pagesize"]);
                 return $this->redirect(array_merge(["stock/search"], $params));
             }
         } else {
@@ -80,8 +78,9 @@ class StockController extends \yii\web\Controller {
             $category = Yii::$app->request->get('category');
             $supplier = Yii::$app->request->get('supplier');
             $search = Yii::$app->request->get('search');
+            $product = Yii::$app->request->get('product');
             $pagesize = Yii::$app->request->get('pagesize');
-            $data = compact('location', 'category', 'supplier', 'search', 'pagesize');
+            $data = compact('location', 'category', 'supplier', 'search', 'product', 'pagesize');
             $mSearchStock->setAttributes($data);
             if ($mSearchStock->validate()) {
                 Yii::$app->session["search.stock"] = $data;
@@ -90,15 +89,8 @@ class StockController extends \yii\web\Controller {
                     'value' => json_encode($data),
                     'expire' => time() + 86400 * 365]));
 
-                $dataProvider = new ActiveDataProvider([
-                    'query' => Stock::find(),
-                    'pagination' => [
-                        'pageSize' => $pagesize,
-                    ],
-                ]);
                 return $this->render('search', [
                             'model' => $mSearchStock,
-                            'dataProvider' => $dataProvider,
                 ]);
             }
         }
@@ -107,6 +99,36 @@ class StockController extends \yii\web\Controller {
         return $this->render('index', [
                     'model' => $mSearchStock,
         ]);
+    }
+
+    public function actionCartAddValidate() {
+        $model = new CartItem();
+        $request = Yii::$app->getRequest();
+        if ($request->isPost && $model->load($request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $params = $model->getAttributes(["stockid", "quantity"]);
+            return ActiveForm::validate($model);
+        }
+    }
+
+    public function actionCartAdd() {
+        $model = new CartItem();
+        $request = Yii::$app->getRequest();
+        if ($request->isPost && $model->load($request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            $params = $model->getAttributes(["stockid", "quantity"]);
+            return ['success' => true];
+        }
+
+        $message = "Cart Add ";
+        $backlink = ((!empty(Yii::$app->request->referrer) ? Yii::$app->request->referrer : Url::to(['stock/index'])));
+        return $this->renderAjax('feedback', [
+                    'message' => $message,
+                    'backlink' => $backlink
+        ]);
+//        return $this->renderAjax('registration', [
+//                    'model' => $model,
+//        ]);
     }
 
     public function actionMoreInfo() {
@@ -135,11 +157,10 @@ class StockController extends \yii\web\Controller {
         ]);
     }
 
-    public function actionFeedback() {
-        $message = "param found stockid no stock items";
-        return $this->render('feedback', [
-                    'message' => $message,
-        ]);
-    }
-
+//    public function actionFeedback() {
+//        //$message = "param found stockid no stock items";
+//        return $this->render('feedback', [
+//                    'message' => $message,
+//        ]);
+//    }
 }
